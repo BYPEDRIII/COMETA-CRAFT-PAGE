@@ -1,0 +1,273 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>COMETA CRAFT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet"/>
+    <style>
+        .blurred-bg {
+            backdrop-filter: blur(10px);
+            background-color: rgba(128, 0, 128, 0.1); /* Very light purple with 10% transparency */
+        }
+        .menu-item:hover {
+            background-color: rgba(128, 0, 128, 0.1); /* Very light purple with 10% transparency */
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .icon {
+            transition: transform 0.5s ease;
+        }
+        .icon:hover {
+            animation: rotate 1s infinite;
+        }
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(15deg);
+            }
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .credits {
+            position: fixed;
+            top: 100%;
+            width: 100%;
+            text-align: center;
+            font-size: 2rem;
+            color: white;
+            animation: scrollCredits 10s linear infinite;
+        }
+        @keyframes scrollCredits {
+            0% {
+                top: 100%;
+            }
+            100% {
+                top: -100%;
+            }
+        }
+        .credits-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .exit-message {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 1rem;
+            color: white;
+        }
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            background: white;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+    <script>
+        function changeContent(content) {
+            const mainContentTitle = document.getElementById('main-content-title');
+            const mainContentList = document.getElementById('main-content-list');
+            const downloadButton = document.getElementById('download-button');
+            const selectedItem = document.getElementById('selected-item');
+            const downloadLink = document.getElementById('download-link');
+
+            selectedItem.innerText = '';
+            downloadLink.href = '#';
+
+            // Remove active class from all menu items
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('bg-black', 'bg-opacity-50');
+            });
+
+            // Add active class to the selected menu item
+            document.getElementById(content).classList.add('bg-black', 'bg-opacity-50');
+
+            if (content === 'Inicio') {
+                mainContentTitle.innerText = 'Inicio';
+                mainContentList.innerHTML = `
+                    <p class="text-center">
+                        <strong>Bienvenido a la tienda oficial de <span style="color: #800080;">COMETA CRAFT</span></strong><br>
+                        Aquí te podrás informar sobre rangos y variedades del servidor y por modalidades. Puedes elegir la categoría de lo que deseas ver en el menú de la parte superior.
+                    </p>
+                `;
+                downloadButton.classList.add('hidden');
+            } else if (content === 'Rangos') {
+                mainContentTitle.innerText = 'Rangos';
+                mainContentList.innerHTML = `
+                    <ul class="space-y-2">
+                        <li class="text-purple-200">1-ESTELAR</li>
+                        <li class="text-purple-300">2-CELESTIAL</li>
+                        <li class="text-purple-400">3-LUNAR</li>
+                        <li class="text-purple-500">4-COMETA</li>
+                        <li class="text-purple-600">5-SUPERNOVA</li>
+                    </ul>
+                `;
+                downloadButton.classList.add('hidden');
+            } else if (content === 'Tienda') {
+                mainContentTitle.innerText = 'Tienda';
+                mainContentList.innerHTML = ``;
+                downloadButton.classList.add('hidden');
+            } else if (content === 'Creditos') {
+                document.getElementById('credits-container').style.display = 'flex';
+                document.addEventListener('keydown', function(event) {
+                    if (event.code === 'Space') {
+                        document.getElementById('credits-container').style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        function setDownloadLink(name, link) {
+            const downloadLink = document.getElementById('download-link');
+            const selectedItem = document.getElementById('selected-item');
+            selectedItem.innerText = name;
+            downloadLink.href = link;
+        }
+
+        function toggleList(listId) {
+            const list = document.getElementById(listId);
+            if (list.classList.contains('hidden')) {
+                list.classList.remove('hidden');
+            } else {
+                list.classList.add('hidden');
+            }
+        }
+
+        function showCredits() {
+            const creditsContainer = document.getElementById('credits-container');
+            creditsContainer.style.display = 'flex';
+            document.addEventListener('keydown', function(event) {
+                if (event.code === 'Space') {
+                    creditsContainer.style.display = 'none';
+                }
+            });
+        }
+
+        function createSnowflakes() {
+            const snowflakeCount = 100;
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.style.left = `${Math.random() * 100}vw`;
+                snowflake.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                snowflake.style.animationDelay = `${Math.random() * 5}s`;
+                document.body.appendChild(snowflake);
+            }
+        }
+    </script>
+</head>
+<body onload="changeContent('Inicio'); createSnowflakes();">
+    <video autoplay muted loop class="video-bg">
+        <source src="https://cdn.pixabay.com/video/2018/06/06/16650-274413195_large.mp4" type="video/mp4">
+    </video>
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-full md:w-1/4 blurred-bg text-white p-4">
+            <h1 class="text-5xl font-bold mb-2 text-center" style="color: #FFFFFF;">
+                COMETA
+            </h1>
+            <h1 class="text-5xl font-bold mb-8 text-center" style="color: #800080;">
+                CRAFT
+            </h1>
+            <ul class="space-y-4">
+                <li id="Inicio" class="menu-item cursor-pointer p-2" onclick="changeContent('Inicio')">
+                    Inicio
+                </li>
+                <li id="Rangos" class="menu-item cursor-pointer p-2" style="color: #800080;" onclick="changeContent('Rangos')">
+                    Rangos
+                </li>
+                <li id="Tienda" class="menu-item cursor-pointer p-2" onclick="changeContent('Tienda')">
+                    Tienda
+                </li>
+                <li id="Creditos" class="menu-item cursor-pointer p-2" onclick="showCredits()">
+                    Créditos
+                </li>
+            </ul>
+            <div class="absolute bottom-4 left-4 flex space-x-4">
+                <a href="-TU-SERVIDOR-DE-DISCORD-" target="_blank">
+                    <i class="fab fa-discord text-2xl icon"></i>
+                </a>
+                <a href="-TU-CANAL-DE-YOUTUBE-" target="_blank">
+                    <i class="fab fa-youtube text-2xl icon"></i>
+                </a>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col items-center justify-center">
+            <div class="blurred-bg text-white p-6 rounded-lg w-80">
+                <h2 class="text-xl font-semibold mb-4" id="main-content-title">
+                    Características de la actualización
+                </h2>
+                <div class="overflow-y-auto h-64 mb-4" id="main-content-list">
+                    <ul class="space-y-2">
+                        <li>Mejora en la estabilidad del sistema.</li>
+                        <li>Nuevas opciones de personalización.</li>
+                        <li>Corrección de errores menores.</li>
+                        <li>Compatibilidad con más dispositivos.</li>
+                        <li>Interfaz de usuario mejorada.</li>
+                        <li>Nuevo juego añadido: Stardew Valley</li>
+                        <li>Nuevo juego añadido: SKYRIM</li>
+                        <li>Nuevo juego añadido: HOTLINE MIAMI 1</li>
+                        <li>Nuevo juego añadido: HOTLINE MIAMI 2</li>
+                        <li>Nuevo juego añadido: GARRY'S MOD</li>
+                        <li>Nuevo juego añadido: GTA 4</li>
+                        <li>Nuevo juego añadido: GTA 3</li>
+                        <li>Nuevo cheat añadido: CS GO 2</li>
+                        <li>Nuevo cheat añadido: Cold War Camo Swapper</li>
+                    </ul>
+                </div>
+                <div id="selected-item" class="text-lg font-semibold mb-2"></div>
+                <a id="download-link" href="#" target="_blank">
+                    <button id="download-button" class="bg-green-500 text-white py-2 px-4 rounded-lg w-full hidden">
+                        Descargar
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div id="credits-container" class="credits-container">
+        <div class="credits">
+            <p>CREADOR: BYPEDRI</p>
+        </div>
+        <div class="exit-message">
+            Para salir, presiona la tecla de espacio
+        </div>
+    </div>
+    <div class="absolute bottom-2 right-2 text-white text-xs">
+        ACCESO ANTICIPADO
+    </div>
+</body>
+</html>
